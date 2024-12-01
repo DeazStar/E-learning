@@ -46,3 +46,7 @@ desktop.ini
 
 # Other Git files
 *.orig
+
+
+# Ignore the .cache_ggshield directory
+.cache_ggshield/
