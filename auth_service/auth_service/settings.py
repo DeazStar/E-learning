@@ -13,6 +13,7 @@ from datetime import timedelta
 from pathlib import Path
 
 import environ
+import os
 env = environ.Env()
 environ.Env.read_env()
 
@@ -133,8 +134,7 @@ AUTH_USER_MODEL = 'users.CustomUser'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 EMAIL_HOST = env('EMAIL_HOST', default='smtp.example.com')
-EMAIL_PORT = env.int('EMAIL_PORT', cast=int, default=587)
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT',default=587))
 EMAIL_USE_TLS = True  # Use TLS for secure connection
-EMAIL_HOST_USER = env('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
-
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
