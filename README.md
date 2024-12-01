@@ -80,5 +80,5 @@ This project is a modular backend system designed for an online learning platfor
  
 ## Archetecture
 
-![E-learning Archetecture](Image_URL_or_Path)
+![E-learning Archetecture](e-learning.png)
 
