@@ -140,9 +140,12 @@ SIMPLE_JWT = {
 
 AUTH_USER_MODEL = 'users.CustomUser'
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'natnaeltafesse1@gmail.com'
-EMAIL_HOST_PASSWORD = 'jccy ydsf uybq zdqy'  # Will be replaced with Real email password (App password)
+import environ
+env = environ.Env()
+environ.Env.read_env()
+
+EMAIL_HOST = env('EMAIL_HOST', default='smtp.example.com')
+EMAIL_PORT = env.int('EMAIL_PORT', cast=int, default=587)
+EMAIL_USE_TLS = True  # Use TLS for secure connection
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
