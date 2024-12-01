@@ -76,4 +76,9 @@ This project is a modular backend system designed for an online learning platfor
 - **Key Features**:  
   - View lessons (text, videos, or files) and mark them as complete.  
   - Take quizzes and receive feedback.  
-  - Track completed lessons and progress.  
+  - Track completed lessons and progress.
+ 
+## Archetecture
+
+![E-learning Archetecture](Image_URL_or_Path)
+
