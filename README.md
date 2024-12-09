@@ -59,24 +59,25 @@ This project is a modular backend system designed for an online learning platfor
 ### **2. Course Management Service**
 - **Responsibilities**:  
   - Manages course and quiz creation, including uploading materials.  
-  - Handles course enrollment for students.
+  - Handles course enrollment for students and delivering learning materials and quizzes to students.
 
 - **Key Features**:  
   - Create and upload courses with lessons and quizzes.  
   - Manage enrollment of students in courses.  
   - Provide APIs for lessons and quiz metadata for consumption by other services.
-
----
-
-### **3. Learning Service**
-- **Responsibilities**:  
-  - Focuses on delivering learning materials and quizzes to students.  
-  - Tracks student progress and quiz results.
-
-- **Key Features**:  
   - View lessons (text, videos, or files) and mark them as complete.  
   - Take quizzes and receive feedback.  
   - Track completed lessons and progress.
+
+---
+
+### **3. Notification Service**
+- **Responsibilities**:  
+  - Create, schedule, and deliver notifications to users.  
+
+- **Key Features**:  
+  - send otp notification via email
+  - send lesson added notification via email
  
 ## Archetecture
 
