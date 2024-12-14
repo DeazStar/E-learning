@@ -1,7 +1,3 @@
 __pycache__
 migrations
-db.sqlite3
-models.py
-serializers.py
-admin.py
 myworld
