@@ -1,84 +1,21 @@
 # **Project Overview**
 
-This project is a modular backend system designed for an online learning platform, serving two primary user roles: **Students** and **Instructors**. The system is divided into three microservices—**Authentication Service**, **Course Management Service**, and **Learning Service**—to ensure scalability, maintainability, and clear responsibility boundaries.
+This project is a modular backend system designed for an online learning platform, serving two primary user roles: **Students** and **Instructors**. The system is divided into three microservices—**Authentication Service**, **Course Management Service**, and **Notification Service**—to ensure scalability, maintainability, and clear responsibility boundaries.
 
----
+# Microservices Communication and Configuration Setup  
+**Felix Edesa**  
+**December 2024**
 
-## **Features**
+## 1. Specification of Micro-services
 
-### **For Students**
-- **User Registration and Login**  
-  - Basic authentication using email and password.  
-  - Role-based access specific to students.
+The table below outlines the specification of the Authentication Service, Course Management Service, and Notification Service in the e-learning platform.
 
-- **Course Enrollment**  
-  - View available courses.  
-  - Enroll in a course.
+| **No** | **Micro-service**            | **Responsibilities**                                                                 | **Key Features**                                                                                      | **Database Entities**                                                    | **APIs**                                                                                   |
+|--------|------------------------------|--------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------|--------------------------------------------------------------------------------------------|
+| 1      | **Authentication Service**    | - Handles login, signup, and profile management.<br>- Manages role-based access control.<br>- Provides secure token-based authentication for other services. | - User registration and login for both students and instructors.<br>- Role-based access specific to students and instructors.<br>- Secure token-based authentication. | Users (students, instructors)                                              | POST /auth/signup: Register new user.<br>POST /auth/login: User login.<br>GET /auth/profile: Retrieve user profile.<br>GET /auth/validate-token: Token validation. |
+| 2      | **Course Management Service** | - Manages course and quiz creation, including uploading materials.<br>- Handles course enrollment for students.<br>- Delivers learning materials and quizzes to students. | - Create and upload courses with lessons and quizzes.<br>- Manage student enrollment in courses.<br>- View lessons (text, videos, or files) and mark them as complete.<br>- Take quizzes and receive feedback.<br>- Track completed lessons and progress. | Courses, Lessons, Quizzes, Enrollments, StudentProgress                       | POST /courses: Create new course.<br>POST /courses/{courseId}/enroll: Enroll in a course.<br>GET /courses/{courseId}: Get course details.<br>GET /courses/{courseId}/lessons: Retrieve lessons for a course.<br>POST /quizzes/{lessonId}: Create a quiz for a lesson.<br>POST /quizzes/{quizId}/submit: Submit a quiz. |
+| 3      | **Notification Service**      | - Create, schedule, and deliver notifications to users.                              | - Send OTP notification via email.<br>- Send lesson added notification via email. | Notifications                                                              | POST /notifications/otp: Send OTP notification.<br>POST /notifications/lesson-added: Send lesson added notification.<br>GET /notifications/status: Get notification status. |                                               |
 
-- **Access Learning Materials**  
-  - View lessons, including text, PDFs, and videos.  
-  - Mark lessons as complete.
-
-- **Quizzes and Assessments**  
-  - Take quizzes to test knowledge (e.g., multiple choice, true/false).  
-  - Receive instant feedback on quiz completion.
-
-- **Progress Tracking**  
-  - View completed lessons and quiz scores.
-
----
-
-### **For Instructors**
-- **User Registration and Login**  
-  - Basic authentication using email and password.  
-  - Role-based access specific to instructors.
-
-- **Course Creation**  
-  - Create and manage courses with details like title, description, and lessons.  
-  - Upload lesson materials, including text, video, or files.
-
-- **Quiz Management**  
-  - Add and manage quizzes for lessons.
-
----
-
-## **Microservices**
-
-### **1. Authentication Service**
-- **Responsibilities**:  
-  - Handles login, signup, and profile management.  
-  - Manages role-based access control.  
-  - Provides secure token-based authentication for other services.
-
-- **Key Features**:  
-  - User registration and login for both students and instructors.  
-  - Exposes APIs to validate tokens and retrieve user profiles.
-
----
-
-### **2. Course Management Service**
-- **Responsibilities**:  
-  - Manages course and quiz creation, including uploading materials.  
-  - Handles course enrollment for students and delivering learning materials and quizzes to students.
-
-- **Key Features**:  
-  - Create and upload courses with lessons and quizzes.  
-  - Manage enrollment of students in courses.  
-  - Provide APIs for lessons and quiz metadata for consumption by other services.
-  - View lessons (text, videos, or files) and mark them as complete.  
-  - Take quizzes and receive feedback.  
-  - Track completed lessons and progress.
-
----
-
-### **3. Notification Service**
-- **Responsibilities**:  
-  - Create, schedule, and deliver notifications to users.  
-
-- **Key Features**:  
-  - send otp notification via email
-  - send lesson added notification via email
- 
 ## Archetecture
 
 ![E-learning Archetecture](e-learning.png)
