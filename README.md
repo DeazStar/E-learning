@@ -1,4 +1,4 @@
-# **Project Overview**
+ # **Project Overview**
 
 This project is a modular backend system designed for an online learning platform, serving two primary user roles: **Students** and **Instructors**. The system is divided into three microservices—**Authentication Service**, **Course Management Service**, and **Notification Service**—to ensure scalability, maintainability, and clear responsibility boundaries.
 
