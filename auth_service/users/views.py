@@ -1,5 +1,6 @@
+import json
+import pika
 from django.shortcuts import render
-
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -42,16 +43,34 @@ class RequestResetPasswordView(APIView):
             email = serializer.validated_data['email']
             user = User.objects.get(email=email)
             user.generate_otp()  # Generate and save the OTP
+            otp = user.reset_otp
 
-            # Send OTP via email
-            send_mail(
-                subject="Password Reset OTP",
-                message=f"Your OTP for password reset is {user.reset_otp}",
-                from_email="no-reply@example.com",
-                recipient_list=[email],
-            )
+            # Prepare the message to send to the notification service
+            message = {
+                'email': email,
+                'otp': otp
+            }
 
-            return Response({"message": "OTP sent to email."}, status=status.HTTP_200_OK)
+            # Connect to RabbitMQ and send the message
+            try:
+                connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+                channel = connection.channel()
+
+                # Ensure the queue exists
+                channel.queue_declare(queue='password_reset')
+
+                # Publish the message to the queue
+                channel.basic_publish(
+                    exchange='',
+                    routing_key='password_reset',
+                    body=json.dumps(message)
+                )
+                connection.close()
+
+                return Response({"message": "OTP sent to email."}, status=status.HTTP_200_OK)
+
+            except Exception as e:
+                return Response({"message": f"Error sending OTP to notification service: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
