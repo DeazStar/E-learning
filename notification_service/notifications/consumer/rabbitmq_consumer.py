@@ -9,9 +9,9 @@ def process_message(ch, method, properties, body):
     try:
         data = json.loads(body)
         email = data.get('email')
-        reset_link = data.get('reset_link')
-        if email and reset_link:
-            send_password_reset_email(email, reset_link)
+        otp = data.get('otp')
+        if email and otp:
+            send_password_reset_email(email, otp)
             print(f"Password reset email sent to {email}")
         else:
             print("Invalid data: Missing email or reset link")
