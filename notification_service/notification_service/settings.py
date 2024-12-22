@@ -20,7 +20,7 @@ DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='no-reply@gmail.com')
 
 
 # Allowed hosts
-ALLOWED_HOSTS = ['*']  # Allow all hosts (use only in development)
+ALLOWED_HOSTS = ['*']
 
 # Installed apps configuration
 
