@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from django.utils.timezone import now
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 User = get_user_model()
 
@@ -9,22 +10,32 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'username', 'email', 'role']
  
-class RegisterSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)
+from users.models import CustomUser
 
+class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
+        model = CustomUser
         fields = ['username', 'email', 'password', 'role']
+        extra_kwargs = {
+            'password': {'write_only': True},
+            'role': {'required': True},  # Ensure role is required
+        }
 
     def create(self, validated_data):
-        user = User.objects.create_user(
-            username=validated_data['username'],
-            email=validated_data['email'],
-            password=validated_data['password'],
-            role=validated_data['role']
-        )
-        return user
+        password = validated_data.pop('password', None)
+        role = validated_data.get('role')  # Get the role from the validated data
+        instance = self.Meta.model(**validated_data)
 
+        # Set the password securely
+        if password:
+            instance.set_password(password)
+
+        # Ensure the role is properly assigned
+        if role not in dict(CustomUser.ROLE_CHOICES):  # Validate role against allowed choices
+            raise serializers.ValidationError({'role': 'Invalid role provided'})
+
+        instance.save()
+        return instance
 
 class RequestResetPasswordSerializer(serializers.Serializer):
     email = serializers.EmailField()
@@ -59,3 +70,17 @@ class VerifyOtpAndResetPasswordSerializer(serializers.Serializer):
         user.reset_otp = None  # Clear the OTP
         user.otp_expiry = None
         user.save()
+
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        return data
+    
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        # Add custom claims
+        token['role'] = user.role  # Ensure 'role' is added from the CustomUser model
+        return token
