@@ -130,6 +130,8 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'TOKEN_OBTAIN_PAIR_SERIALIZER': 'users.serializers.CustomTokenObtainPairSerializer',
 }
 
 AUTH_USER_MODEL = 'users.CustomUser'
@@ -141,3 +143,4 @@ EMAIL_PORT = int(os.environ.get('EMAIL_PORT',default=587))
 EMAIL_USE_TLS = True  # Use TLS for secure connection
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+
