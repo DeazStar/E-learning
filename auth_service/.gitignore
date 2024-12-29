@@ -1,0 +1,53 @@
+# Ignore environment variables
+.env
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Django migrations
+**/migrations/**/__pycache__/
+**/migrations/*.py[cod]
+
+# Logs and database
+*.log
+*.sql
+*.sqlite3
+
+# Virtual environments
+venv/
+.venv/
+env/
+*.env/
+
+# Static and media files (if dynamically generated or uploaded)
+staticfiles/
+media/
+
+# Django secret key file (if applicable)
+*.key
+
+# IDE settings
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# Testing
+coverage/
+.coverage
+nosetests.xml
+test-results/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Other Git files
+*.orig
+
+
+# Ignore the .cache_ggshield directory
+.cache_ggshield/
