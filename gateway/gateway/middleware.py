@@ -1,4 +1,5 @@
 # middleware.py
+import os
 import environ
 import requests
 from django.http import JsonResponse
@@ -7,6 +8,11 @@ from django.http import JsonResponse
 
 # Initialize environment variables
 env = environ.Env()
+environ.Env.read_env()
+
+# Explicitly point to the .env file
+ENV_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env')
+environ.Env.read_env(ENV_FILE)
 
 # Get the service URLs using django-environ
 AUTH_SERVICE_URL = env("AUTH_SERVICE_URL")

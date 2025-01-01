@@ -16,7 +16,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from gateway.views import CourseServiceProxyView, AuthServiceProxyView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/users/login/', AuthServiceProxyView.as_view(), name='auth-service-proxy'),
 ]
