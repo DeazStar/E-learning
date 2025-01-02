@@ -27,3 +27,13 @@ class Lesson(models.Model):
 
     def __str__(self):
         return f"{self.course.title} - Lesson {self.order}"
+    
+
+class Enrollment(models.Model):
+    student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='enrollments')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='enrollments')
+    course_title = models.CharField(max_length=100)
+    enrolled_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.student.username} enrolled in {self.course.name}"
