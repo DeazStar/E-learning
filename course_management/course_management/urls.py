@@ -22,8 +22,10 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path('course/', CreateCourseView.as_view(), name='create_course'),
     path('course/lessons', CreateLessonView.as_view(), name='create_lesson'),
-    path('course/delete/', DeleteCourseView.as_view(), name='delete_course'),
-    path('course/lessons/delete/', DeleteLessonView.as_view(), name='delete_lesson'),
+    path('course/delete/<int:course_id>/', DeleteCourseView.as_view(), name='delete_course'),
+    path('course/lessons/delete/<int:lesson_id>/', DeleteLessonView.as_view(), name='delete_lesson'),
+    path('quizzes/delete/<int:quiz_id>/', DeleteQuizView.as_view(), name='delete_lesson'),
 
-
+    path('quizzes/', CreateQuizView.as_view(), name='quiz-list-create'),  # List and create quizzes
+    path('quizzes/<int:pk>/', DeleteQuizView.as_view(), name='quiz-delete'),  # Delete a specific quiz by ID
 ]
