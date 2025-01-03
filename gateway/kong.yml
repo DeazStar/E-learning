@@ -1,0 +1,17 @@
+_format_version: "3.0"
+_transform: true
+
+services:
+  - name: auth-service
+    host: auth-service  # This is the container name or service address
+    port: 8001
+    protocol: http
+    routes:
+      - name: login-route
+        paths:
+          - /api/users/login/
+        strip_path: false
+      - name: register-route
+        paths:
+          - /api/users/register/
+        strip_path: false

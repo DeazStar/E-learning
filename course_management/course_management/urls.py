@@ -25,6 +25,8 @@ urlpatterns = [
     path('course/delete/<int:course_id>/', DeleteCourseView.as_view(), name='delete_course'),
     path('course/lessons/delete/<int:lesson_id>/', DeleteLessonView.as_view(), name='delete_lesson'),
     path('quizzes/delete/<int:quiz_id>/', DeleteQuizView.as_view(), name='delete_lesson'),
+    path('course/enroll/', EnrollView.as_view(), name='enroll'),
+    path('course/enrolled-courses/', EnrolledCoursesView.as_view(), name='enrolled-courses'),
 
     path('quizzes/', CreateQuizView.as_view(), name='quiz-list-create'),  # List and create quizzes
     path('quizzes/<int:pk>/', DeleteQuizView.as_view(), name='quiz-delete'),  # Delete a specific quiz by ID
