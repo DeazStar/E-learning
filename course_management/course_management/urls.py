@@ -24,6 +24,8 @@ urlpatterns = [
     path('course/lessons', CreateLessonView.as_view(), name='create_lesson'),
     path('course/delete/', DeleteCourseView.as_view(), name='delete_course'),
     path('course/lessons/delete/', DeleteLessonView.as_view(), name='delete_lesson'),
+    path('course/enroll/', EnrollView.as_view(), name='enroll'),
+    path('course/enrolled-courses/', EnrolledCoursesView.as_view(), name='enrolled-courses'),
 
 
 ]
