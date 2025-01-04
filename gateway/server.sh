@@ -37,9 +37,20 @@ function run() {
   docker run -d --name auth-service \
     --network=kong-net \
     -p 127.0.0.1:8001:8001 \
-    auth_service
+    auth-service
 
   echo "Setup completed. Kong and auth_service are running."
+
+  # Step 4: Build and run the course_managment_service container
+  echo "Building and starting the course_managment_service container..."
+  cd ../course_management || exit
+  docker build -t course-management-service .
+  docker run -d --name course-management-service \
+    --network=kong-net \
+    -p 127.0.0.1:8005:8005 \
+    course-management-service
+  
+  echo "Setup completed. Kong and course_managment_service are running."
 }
 
 function clean() {
@@ -51,11 +62,22 @@ function clean() {
   docker stop auth-service 2>/dev/null
   docker rm auth-service 2>/dev/null
 
+  echo "Stopping and removing the 'course_management_service' container..."
+  docker stop course-management-service 2>/dev/null
+  docker rm course-management-service 2>/dev/null
+
   echo "Removing the 'kong-net' network..."
   docker network rm kong-net 2>/dev/null
 
-  echo "Clean-up completed for Kong, auth-service, and kong-net."
+  echo "Removing associated Docker volumes..."
+  docker volume prune -f
+
+  echo "Removing unused Docker images..."
+  docker image prune -a -f
+
+  echo "Clean-up completed for Kong, auth-service, course_management_service, kong-net, volumes, and images."
 }
+
 
 case $COMMAND in
   run)

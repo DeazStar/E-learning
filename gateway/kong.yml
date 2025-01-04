@@ -1,5 +1,4 @@
 _format_version: "3.0"
-_transform: true
 
 services:
   - name: auth-service
@@ -15,3 +14,27 @@ services:
         paths:
           - /api/users/register/
         strip_path: false
+
+  - name: course-management-service
+    host: course-management-service  # This is the container name or service address
+    port: 8005
+    protocol: http
+    routes:
+      - name: course-route
+        paths:
+          - /course/
+        strip_path: false
+    plugins:
+      - name: jwt
+        config:
+          key_claim_name: kid
+          claims_to_verify:
+            - exp
+
+consumers:
+  - username: auth-service
+
+jwt_secrets:
+  - consumer: auth-service
+    secret: django-insecure-jsx8%)huo*1
+    key: d89c03b4-27fb-4b9b-9b33-2d122cb6be6a
