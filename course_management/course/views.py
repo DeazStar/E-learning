@@ -7,7 +7,6 @@ from .models import Course, Lesson, Quiz, Enrollment
 from .serializers import CourseSerializer, LessonSerializer, EnrollmentSerializer
 from django.contrib.auth.models import User
 from .models import Course, Lesson, Enrollment
-from .serializers import CourseSerializer, LessonSerializer, EnrollmentSerializer
 from django.contrib.auth.models import User
 
 class CreateCourseView(APIView):

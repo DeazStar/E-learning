@@ -83,4 +83,6 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         # Add custom claims
         token['role'] = user.role  # Ensure 'role' is added from the CustomUser model
+        token['kid'] = 'd89c03b4-27fb-4b9b-9b33-2d122cb6be6a'
+        #token.header['kid'] = 'd89c03b4-27fb-4b9b-9b33-2d122cb6be6a'
         return token
