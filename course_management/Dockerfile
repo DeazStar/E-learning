@@ -6,7 +6,7 @@ ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1
 
 # Set the working directory inside the container
-WORKDIR /usr/src/auth_service
+WORKDIR /usr/src/course_managment_service
 
 # Copy requirements.txt into the container
 COPY requirements.txt .
@@ -17,10 +17,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy all project files into the container
 COPY . .
 
-COPY .env /usr/src/auth_service/.env
+COPY .env /usr/src/course_managment_service/.env
 
 # Expose the port your application runs on (e.g., 8000 for Django)
-EXPOSE 8001
+EXPOSE 8005
 
 # Default command to run manage.py
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8001"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8005"]
