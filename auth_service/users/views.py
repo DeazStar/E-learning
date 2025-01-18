@@ -87,7 +87,11 @@ class VerifyTokenView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
-        token = request.data.get('token', None)
+        headers = request.data.get('headers', None)
+        if not headers:
+            return Response({"error": "Headers is required."}, status=400)
+        
+        token = headers.get('authorization', None).split(' ')[1]
 
         if not token:
             return Response({"error": "Token is required."}, status=400)
