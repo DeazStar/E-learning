@@ -45,6 +45,15 @@ function run() {
   echo "Creating Docker network 'kong-net'..."
   docker network create kong-net
 
+  # Step 3: Create rabbit-mq netowrk
+  echo "Creating Docker network 'rabit-mq-net"
+  docker network create rabbit-mq-net
+
+  # Setp 4: Run rabbit Mq
+  echo "Starting rabbit mq" 
+  docker run -d --rm --name rabbitmq --network rabbit-mq-net -p 5672:5672 -p 15672:15672 rabbitmq:4.0-management
+
+
   # Step 3: Run the kong-dbless container with the custom image
   echo "Starting the Kong container with the middleman plugin pre-installed..."
   docker run -d --name kong-dbless \
@@ -75,6 +84,7 @@ function run() {
   docker build -t auth-service .
   docker run -d --name auth-service \
     --network=kong-net \
+    --network=rabbit-mq-net \
     -p 127.0.0.1:8001:8001 \
     auth-service
 
@@ -89,6 +99,16 @@ function run() {
     -p 127.0.0.1:8005:8005 \
     course-management-service
   
+
+  # Step 5: Build and run the notification service container
+  echo "Building and starting the notification_service container..."
+  cd ../notification_service || exit
+  docker build -t notification-service .
+  docker run -d --name notification-service \
+    --network=rabbit-mq-net \
+    -p 127.0.0.1:8007:8007 \
+    notification-service
+  
   echo "Setup completed. Kong and course_management_service are running."
 }
 
@@ -96,6 +116,10 @@ function clean() {
   echo "Stopping and removing the 'kong-dbless' container..."
   docker stop kong-dbless 2>/dev/null
   docker rm kong-dbless 2>/dev/null
+
+  echo "Stoppoing and removing rabbit mq conatiner...."
+  docker stop rabbitmq 2>/dev/null
+  docker rm rabbitmq 2>/dev/null
 
   echo "Stopping and removing the 'auth_service' container..."
   docker stop auth-service 2>/dev/null
@@ -105,8 +129,15 @@ function clean() {
   docker stop course-management-service 2>/dev/null
   docker rm course-management-service 2>/dev/null
 
+  echo "Stopping and removing the 'notification_service' container..."
+  docker stop notification-service 2>/dev/null
+  docker rm notification-service 2>/dev/null
+
   echo "Removing the 'kong-net' network..."
   docker network rm kong-net 2>/dev/null
+
+  echo "Removing the 'kong-net' network..."
+  docker network rm rabit-mq-net 2>/dev/null
 
   echo "Clean-up completed for Kong, auth-service, course_management_service, and kong-net."
 }

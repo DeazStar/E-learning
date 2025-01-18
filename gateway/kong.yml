@@ -13,9 +13,14 @@ services:
       - name: register-route
         paths:
           - /api/users/register/
+        strip_path: false
       - name: verify-route
         paths:
           - /api/users/verify-token/
+        strip_path: false
+      - name: password-reset
+        paths:
+          - /api/users/password-reset/request/
         strip_path: false
 
   - name: course-management-service
@@ -43,3 +48,11 @@ services:
           cache_based_on: host  # Cache based on the host
           cache_ttl: 60  # Time-to-live for the cache in seconds
           streamdown_injected_headers: true
+
+plugins:
+  - name: rate-limiting
+    config:
+      second: 25  # Limit to 5 requests per second
+      hour: 60000  # Limit to 10,000 requests per hour
+      policy: local  # Local enforcement per Kong node
+
