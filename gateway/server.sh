@@ -2,13 +2,51 @@
 
 COMMAND=$1
 
+function build_custom_kong_image() {
+  echo "Pulling the official Kong image..."
+  docker pull kong:3.9.0
+
+  echo "Building the custom Kong image with the middleman plugin..."
+  cat > Dockerfile.kong <<EOF
+FROM kong:3.9.0
+
+USER root
+
+# Install required build tools
+RUN apt-get update && apt-get install -y gcc make musl-dev && rm -rf /var/lib/apt/lists/*
+
+# Install the middleman plugin
+RUN luarocks install kong-plugin-the-middleman
+
+USER kong
+
+# Expose necessary ports
+EXPOSE 8000 8443 8002 8445
+EOF
+
+  docker build -f Dockerfile.kong -t kong-with-middleman .
+  if [ $? -eq 0 ]; then
+    echo "Custom Kong image built successfully."
+  else
+    echo "Failed to build the custom Kong image."
+    exit 1
+  fi
+
+  rm Dockerfile.kong
+}
+
+
+
 function run() {
-  # Step 1: Create the kong-net network
+  # Step 1: Build the custom Kong image
+  build_custom_kong_image
+
+  # Step 2: Create the kong-net network
   echo "Creating Docker network 'kong-net'..."
   docker network create kong-net
 
-  # Step 2: Run the kong-dbless container
-  echo "Starting the Kong container..."
+  # Step 3: Run the kong-dbless container with the custom image
+  echo "Starting the Kong container with the middleman plugin pre-installed..."
   docker run -d --name kong-dbless \
     --network=kong-net \
     -v "$(pwd):/kong/declarative/" \
@@ -20,17 +58,18 @@ function run() {
     -e "KONG_ADMIN_ERROR_LOG=/dev/stderr" \
     -e "KONG_ADMIN_LISTEN=0.0.0.0:8002, 0.0.0.0:8445 ssl" \
     -e "KONG_ADMIN_GUI_URL=http://localhost:8002" \
+    -e "KONG_PLUGINS=bundled,the-middleman" \
     -p 8000:8000 \
     -p 8443:8443 \
     -p 127.0.0.1:8002:8002 \
     -p 127.0.0.1:8445:8445 \
-    kong:3.9.0
+    kong-with-middleman
 
   # Wait for Kong to start
   echo "Waiting for Kong to initialize..."
   sleep 5
 
-  # Step 3: Build and run the auth_service container
+  # Step 4: Build and run the auth_service container
   echo "Building and starting the auth_service container..."
   cd ../auth_service || exit
   docker build -t auth-service .
@@ -41,8 +80,8 @@ function run() {
 
   echo "Setup completed. Kong and auth_service are running."
 
-  # Step 4: Build and run the course_managment_service container
-  echo "Building and starting the course_managment_service container..."
+  # Step 5: Build and run the course_management_service container
+  echo "Building and starting the course_management_service container..."
   cd ../course_management || exit
   docker build -t course-management-service .
   docker run -d --name course-management-service \
@@ -50,7 +89,7 @@ function run() {
     -p 127.0.0.1:8005:8005 \
     course-management-service
   
-  echo "Setup completed. Kong and course_managment_service are running."
+  echo "Setup completed. Kong and course_management_service are running."
 }
 
 function clean() {
@@ -69,15 +108,8 @@ function clean() {
   echo "Removing the 'kong-net' network..."
   docker network rm kong-net 2>/dev/null
 
-  echo "Removing associated Docker volumes..."
-  docker volume prune -f
-
-  echo "Removing unused Docker images..."
-  docker image prune -a -f
-
-  echo "Clean-up completed for Kong, auth-service, course_management_service, kong-net, volumes, and images."
+  echo "Clean-up completed for Kong, auth-service, course_management_service, and kong-net."
 }
-
 
 case $COMMAND in
   run)
