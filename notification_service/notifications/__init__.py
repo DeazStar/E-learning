@@ -1,2 +1,2 @@
-from notifications.utils import send_password_reset_email
+from notifications.utils import send_password_reset_email, send_prompotional_mail
 from .consumer.rabbitmq_consumer import start_consumer
