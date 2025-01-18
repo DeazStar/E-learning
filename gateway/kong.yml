@@ -13,6 +13,9 @@ services:
       - name: register-route
         paths:
           - /api/users/register/
+      - name: verify-route
+        paths:
+          - /api/users/verify-token/
         strip_path: false
 
   - name: course-management-service
@@ -25,16 +28,18 @@ services:
           - /course/
         strip_path: false
     plugins:
-      - name: jwt
+      - name: the-middleman
         config:
-          key_claim_name: kid
-          claims_to_verify:
-            - exp
-
-consumers:
-  - username: auth-service
-
-jwt_secrets:
-  - consumer: auth-service
-    secret: django-insecure-jsx8%)huo*1
-    key: d89c03b4-27fb-4b9b-9b33-2d122cb6be6a
+          url: http://auth-service:8001
+          path: /api/users/verify-token/  # Endpoint to call before forwarding request
+          method: POST  # You can use GET or POST as required
+          forward_headers: true  # Forward incoming headers to the service
+          forward_path: true  # Forward the path to the service
+          forward_query: true  # Forward the query params to the service
+          forward_body: true  # Forward the body to the service
+          inject_body_response_into_header: true  # Inject the response into the original header
+          injected_header_prefix: X-  # Prefix to add to the injected headers
+          cache_enabled: false  # Cache the response from the middle service (optional)
+          cache_based_on: host  # Cache based on the host
+          cache_ttl: 60  # Time-to-live for the cache in seconds
+          streamdown_injected_headers: true

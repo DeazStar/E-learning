@@ -19,6 +19,16 @@ class CreateCourseView(APIView):
 
     def post(self, request):
         data = request.data
+
+        role = request.META.get('HTTP_X_ROLE', None)
+
+        # Check if 'role' is present in the request body and validate it
+        if role != 'instructor':
+            return Response(
+                {"detail": "Unauthorized access. Only instructors can create courses."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
         # data['instructor'] = request.user.id  # Automatically assign the instructor to the authenticated user
         serializer = CourseSerializer(data=data)
         if serializer.is_valid():
