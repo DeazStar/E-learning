@@ -18,3 +18,20 @@ def send_password_reset_email(email, otp):
         recipient_list=[email],
         fail_silently=False,
     )
+
+def send_prompotional_mail(email, subject, message):
+    """
+    Sends a password reset email to the user.
+    
+    Args:
+        email (str): The recipient's email address.
+        subject (str): mail subject
+        message (str): mail message
+    """
+    send_mail(
+        subject=subject,
+        message=message,
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[email],
+        fail_silently=False,
+    )
