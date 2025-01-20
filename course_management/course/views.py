@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from .models import Course, Lesson, Enrollment
 from django.contrib.auth.models import User
 
-class CreateCourseView(APIView):
+class CourseView(APIView):
     # permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -36,8 +36,30 @@ class CreateCourseView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class CourseDetailView(APIView):
+    # permission_classes = [IsAuthenticated]
 
-class CreateLessonView(APIView):
+    def get(self, request, course_id=None):
+        courses = Course.objects.filter(id=course_id)  # Filter courses with the given course_id
+        serializer = CourseSerializer(courses, many=True)  # Serialize the queryset
+        return Response(serializer.data, status=200)  # Return serialized data
+
+    def delete(self, request, course_id):
+        # This method should handle course deletion
+        try:
+            courses = Course.objects.filter(id=course_id)  # Filter courses with the given course_id
+            if not courses.exists():
+                return Response({"detail": "Course not found."}, status=status.HTTP_404_NOT_FOUND)
+
+            courses.delete()  # Delete the filtered courses
+            Quiz.objects.filter(course=course_id).delete()  # Delete quizzes associated with the course
+            Lesson.objects.filter(course=course_id).delete()  # Delete lessons associated with the course
+            return Response({"detail": "Course deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+
+        except Exception as e:
+            return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class LessonView(APIView):
     # permission_classes = [IsAuthenticated] # /course/:id / /course?user_id=ll
 
     def get(self, request):
@@ -51,6 +73,29 @@ class CreateLessonView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class LessonDetailView(APIView):
+    def get(self, request, lesson_id=None):
+        lessons = Lesson.objects.filter(id=lesson_id)  # Filter lessons with the given lesson_id
+        serializer = LessonSerializer(lessons, many=True)  # Serialize the queryset
+        return Response(serializer.data, status=200)  # Return serialized data
+
+    def delete(self, request,lesson_id=None):
+        try:
+            role = request.META.get('HTTP_X_ROLE', None)
+
+            # Check if 'role' is present in the request body and validate it
+            if role != 'instructor':
+                return Response(
+                    {"detail": "Unauthorized access. Only instructors can create courses."},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+            Lesson.objects.filter(id=lesson_id).delete()  # Delete lessons associated with the course
+
+            return Response({"detail": "Lesson deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+        except Lesson.DoesNotExist:
+            return Response({"detail": "Lesson not found."}, status=status.HTTP_404_NOT_FOUND)
+
 class EnrollView(APIView):
     def post(self, request):
         user_id = request.data.get('user_id')
@@ -104,7 +149,7 @@ from rest_framework import status
 from .models import Quiz
 from .serializers import QuizSerializer
 
-class CreateQuizView(APIView):
+class QuizView(APIView):
     # permission_classes = [IsAuthenticated]  # Uncomment if you need authentication
 
     def get(self, request):
@@ -123,7 +168,7 @@ class CreateQuizView(APIView):
             print(serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class DeleteQuizView(APIView):
+class QuizDetailView(APIView):
     # permission_classes = [IsAuthenticated]
 
     def get(self, request,quiz_id=None):
