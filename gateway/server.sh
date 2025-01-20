@@ -117,6 +117,10 @@ function clean() {
   docker stop kong-dbless 2>/dev/null
   docker rm kong-dbless 2>/dev/null
 
+  echo "Stopping and removing the 'rabbit-mq-net' container..."
+  docker stop rabbit-mq-net 2>/dev/null
+  docker rm rabbit-mq-net 2>/dev/null
+
   echo "Stoppoing and removing rabbit mq conatiner...."
   docker stop rabbitmq 2>/dev/null
   docker rm rabbitmq 2>/dev/null
