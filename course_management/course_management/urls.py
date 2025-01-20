@@ -20,14 +20,13 @@ from course.views import *
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('course/', CreateCourseView.as_view(), name='create_course'),
-    path('course/lessons', CreateLessonView.as_view(), name='create_lesson'),
-    path('course/delete/<int:course_id>/', DeleteCourseView.as_view(), name='delete_course'),
-    path('course/lessons/delete/<int:lesson_id>/', DeleteLessonView.as_view(), name='delete_lesson'),
-    path('quizzes/delete/<int:quiz_id>/', DeleteQuizView.as_view(), name='delete_lesson'),
+    path('course/', CourseView.as_view(), name='course'),
+    path('course/<int:course_id>/', CourseDetailView.as_view(), name='course_detail'),
+    path('course/lessons/', LessonView.as_view(), name='create_lesson'),
+    path('course/lessons/<int:lesson_id>/', LessonDetailView.as_view(), name='lesson_detail'),
     path('course/enroll/', EnrollView.as_view(), name='enroll'),
     path('course/enrolled-courses/', EnrolledCoursesView.as_view(), name='enrolled-courses'),
 
-    path('quizzes/', CreateQuizView.as_view(), name='quiz-list-create'),  # List and create quizzes
-    path('quizzes/<int:pk>/', DeleteQuizView.as_view(), name='quiz-delete'),  # Delete a specific quiz by ID
+    path('course/quizzes/', QuizView.as_view(), name='quiz'),  # List and create quizzes
+    path('course/quizzes/<int:quiz_id>/', QuizDetailView.as_view(), name='quiz_detail'),  # Delete a specific quiz by ID
 ]
