@@ -22,6 +22,10 @@ services:
         paths:
           - /api/users/password-reset/request/
         strip_path: false
+      - name: profile-route
+        paths:
+          - /api/users/get_me/
+        strip_path: false
 
   - name: course-management-service
     host: course-management-service  # This is the container name or service address
