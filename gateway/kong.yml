@@ -30,34 +30,34 @@ services:
     routes:
       - name: course-route
         paths:
-          - /course/
+          - /api/course/
         strip_path: false
       - name: course-detail
         paths:
-          - /course/{course_id}/
+          - /api/course/{course_id}/
         strip_path: false
       - name: lesson-route
         paths:
-          - /course/lessons/
+          - /api/course/lessons/
         strip_path: false
       - name: lesson-detail-route
         paths:
-          - /course/lesson/{lesson_id}/
+          - /api/course/lesson/{lesson_id}/
       - name: quiz-route
         paths:
-          - /course/quizzes/
+          - /api/course/quizzes/
         strip_path: false
       - name: quiz-detail-route
         paths:
-          - /course/quizzes/{quiz_id}/
+          - /api/course/quizzes/{quiz_id}/
         strip_path: false
       - name: enrollment-route
         paths:
-          - course/enroll/
+          - /api/course/enroll/
         strip_path: false
       - name: enrollment-detail-route
         paths:
-          - course/enrolled-courses/
+          - /api/course/enrolled-courses/
         strip_path: false
     plugins:
       - name: the-middleman
